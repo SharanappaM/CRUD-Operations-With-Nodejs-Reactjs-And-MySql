@@ -1,0 +1,115 @@
+Create folder called server and client (main folder CRUDOperation)
+
+ open CRUDOperation folder with vs code 
+
+Steps to create server
+
+navigate to server folder type cammonds 
+
+>> npm init 
+>> install necessary dependencies 
+>> npm install express mysql nodemon 
+
+>> Create index.js 
+import express from "express"CURD Operation Using node js , mysql with react js 
+________________________________________
+Project Setup
+1.	Create Main Folders:
+o	Create two folders named server and client inside a main folder called CRUDOperation.
+o	Open the CRUDOperation folder with Visual Studio Code.
+________________________________________
+Steps to Create the Server
+1.	Initialize Server Folder:
+o	Navigate to the server folder in your terminal and run the following commands:
+bash
+Copy code
+npm init -y
+npm install express mysql nodemon
+2.	Create Server File:
+o	In the server folder, create a file named index.js and add the following code:
+javascript
+Copy code
+import express from "express";
+const app = express();
+
+app.get("/getData", (req, res) => {
+    res.json("Hello Get method");
+});
+
+app.listen(8787, () => {
+    console.log("Server Connected");
+});
+3.	Configure Package for Module Imports:
+o	To enable import statements, open package.json and add "type": "module" after "main": "index.js".
+4.	Start the Server:
+o	You can start the server in two ways:
+	Run nodemon index.js, or
+	Add "start": "nodemon index.js" inside the "scripts" object in package.json and then run npm start.
+5.	Test the Server:
+o	After starting the server, verify it's running by accessing http://localhost:8787/getData in your browser. You should see {"message": "Hello Get method"}.
+________________________________________
+Connect to MySQL Database
+1.	Create Database and Table:
+o	Open MySQL Workbench and create a database named emp_demo.
+o	Inside emp_demo, create a table named employee.
+2.	Connect MySQL in Code:
+o	Add the following code to index.js to connect to the MySQL database:
+import mysql from "mysql";
+
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "Sharan@123",
+    database: "emp_demo",
+});
+3.	Implement GET Operation for MySQL:
+o	Add this code to handle the GET request to retrieve employee data:
+app.get("/getEmp", (req, res) => {
+    const q = "SELECT * FROM employee";
+    db.query(q, (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
+});
+4.	Handling MySQL Protocol Error:
+o	If you encounter an error like {"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}, open MySQL Command Line Client and run:
+sql
+Copy code
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+________________________________________
+Create Operation with MySQL
+1.	Add POST Endpoint for Creating Employee:
+o	Add the following code to index.js:
+app.post("/createEmp", (req, res) => {
+    const q = "INSERT INTO employee (`id`, `des`, `name`, `password`, `phone`, `sal`) VALUES (?)";
+// // This is for static storing
+    // const values =[
+    //     "2",
+    //     "SDE",
+    //     "Sharan",
+    //     "@123",
+    //     "9742595070",
+    //     "35000"
+    // ]
+    // Dynamic storing
+    const values = [
+        req.body.id,
+        req.body.des,
+        req.body.name,
+        req.body.password,
+        req.body.phone,
+        req.body.sal,
+    ];
+
+    db.query(q, [values], (err, data) => {
+        if (err) return res.json(err);
+        return res.json("Employee created successfully");
+    });
+});
+
+Test POST Endpoint with Postman:
+•	Use Postman to test the endpoint by sending a POST request to http://localhost:8787/createEmp.
+•	If you encounter an error while sending data, ensure express.json() middleware is added to index.js:
+app.use(express.json());
+
+

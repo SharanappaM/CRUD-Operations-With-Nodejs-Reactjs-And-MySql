@@ -15,14 +15,6 @@ const db = mysql.createConnection({
 
 app.use(express.json()) // add this is not send throgth postman 
 
-app.get("/getEmp",(req,res)=>{
-    const q = "SELECT * FROM employee"
-    db.query(q,(err,data)=>{
-        if(err) return res.json(err)
-            return res.json(data)
-
-    })
-})
 
 
 app.get("/getData",(req,res)=>{
